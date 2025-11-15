@@ -1,0 +1,51 @@
+import os
+
+def get_pdf_list(folder_path, full_path=False):
+    """
+    Reads all PDF files in the given folder and returns a list of their names 
+    or full paths.
+
+    Parameters
+    ----------
+    folder_path : str
+        Path to the folder containing PDF files.
+    full_path : bool, optional
+        If True, return full file paths. If False, return only filenames without extension.
+        Default is True.
+
+    Returns
+    -------
+    list
+        List of PDF file names or paths.
+    """
+    if not os.path.isdir(folder_path):
+        raise ValueError(f"The provided path does not exist or is not a directory: {folder_path}")
+
+    pdf_list = []
+
+    for file in os.listdir(folder_path):
+        if file.lower().endswith('.pdf'):
+            if full_path:
+                pdf_list.append(os.path.join(folder_path, file))
+            else:
+                pdf_list.append(os.path.splitext(file)[0])
+
+    return sorted(pdf_list)
+
+
+if __name__ == "__main__":
+    folder_path = "C:\\Users\\ACER\\Downloads\\barakhadi"
+    pdf_files = get_pdf_list(folder_path, full_path=True)
+
+    print("\nList of PDF files found:\n")
+    for pdf in pdf_files:
+        print(pdf)
+
+    # Optional: save as a text or JSON file
+    save_option = input("\nDo you want to save the list to a file? (y/n): ").lower()
+    if save_option == "y":
+        import json
+        output_path = os.path.join(folder_path, "pdf_files_list.json")
+        with open(output_path, "w", encoding="utf-8") as f:
+            json.dump(pdf_files, f, indent=4)
+        print(f"\nList saved at: {output_path}")
